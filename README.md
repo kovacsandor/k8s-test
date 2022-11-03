@@ -69,18 +69,6 @@ In your `/etc/host` file map `k8s-test.com` to your local ip address. This is ne
 127.0.0.1 k8s-test.com
 ```
 
-### With Skaffold
-
-#### Install Skaffold
-
-https://skaffold.dev/docs/install/
-
-```bash
-cd ~/Projects/k8s-test
-kubectl apply -f ingress.dev.yaml
-skaffold dev
-```
-
 ### With Docker Compose
 
 #### Start app
