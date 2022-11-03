@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservice-b-deployment
+spec: 
+  replicas: 1
+  selector:
+    matchLabels:
+      app: microservice-b-deployment-label
+  template:
+    metadata:
+      labels: 
+        app: microservice-b-deployment-label
+    spec: 
+      containers:
+        - name: microservice-b-deployment-container
+          image: andorkovacs/k8s-test-microservice-b-docker-image

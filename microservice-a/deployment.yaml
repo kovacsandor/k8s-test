@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservice-a-deployment
+spec: 
+  replicas: 1
+  selector:
+    matchLabels:
+      app: microservice-a-deployment-label
+  template:
+    metadata:
+      labels: 
+        app: microservice-a-deployment-label
+    spec: 
+      containers:
+        - name: microservice-a-deployment-container
+          image: andorkovacs/k8s-test-microservice-a-docker-image
+          env:
+            - name: REACT_APP_WEBSITE_NAME
+              value: TEST
+            - name: REACT_APP_WEBSITE_NAME_2
+              value: "TEST"

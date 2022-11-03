@@ -1,0 +1,57 @@
+version: '2'
+
+services:
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+
+  microservice-a:
+    container_name: microservice-a-cluster-ip-service
+    image: k8s-test-microservice-a-docker-compose-image
+    build:
+      context: microservice-a
+      dockerfile: ./Dockerfile.dev
+    expose:
+      - "8080"
+    environment:
+      - VIRTUAL_HOST=k8s-test.com
+      - VIRTUAL_PATH=/microservice-a
+    env_file:
+      - ./microservice-a/.env
+    volumes:
+      - ./microservice-a/src/:/usr/src/app/src/
+      
+  microservice-b:
+    container_name: microservice-b-cluster-ip-service
+    image: k8s-test-microservice-b-docker-compose-image
+    build:
+      context: microservice-b
+      dockerfile: ./Dockerfile.dev
+    expose:
+      - "8081"
+    environment:
+      - VIRTUAL_HOST=k8s-test.com
+      - VIRTUAL_PATH=/microservice-b
+    env_file:
+      - ./microservice-b/.env
+    volumes:
+      - ./microservice-b/src/:/usr/src/app/src/
+
+  client:
+    container_name: client-cluster-ip-service
+    image: k8s-test-client-docker-compose-image
+    build:
+      context: client
+      dockerfile: ./Dockerfile.dev
+    expose:
+      - "3000"
+    environment:
+      - VIRTUAL_HOST=k8s-test.com
+      - VIRTUAL_PATH=/
+    env_file:
+      - ./client/.env
+    volumes:
+      - ./client/src/:/usr/src/app/src/

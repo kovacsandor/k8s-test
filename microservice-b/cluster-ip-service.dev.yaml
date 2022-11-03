@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: microservice-b-cluster-ip-service-dev
+spec:
+  selector:
+    app: microservice-b-deployment-label-dev
+  type: ClusterIP
+  ports:
+    - name: microservice-b-deployment-label-dev
+      protocol: TCP
+      port: 8081
+      targetPort: 8081
