@@ -15,8 +15,6 @@ spec:
       containers:
         - name: microservice-a-deployment-container
           image: andorkovacs/k8s-test-microservice-a-docker-image
-          env:
-            - name: REACT_APP_WEBSITE_NAME
-              value: TEST
-            - name: REACT_APP_WEBSITE_NAME_2
-              value: "TEST"
+          envFrom:
+            - secretRef:
+                name: microservice-a-secret

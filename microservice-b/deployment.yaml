@@ -15,3 +15,6 @@ spec:
       containers:
         - name: microservice-b-deployment-container
           image: andorkovacs/k8s-test-microservice-b-docker-image
+          envFrom:
+            - secretRef:
+                name: microservice-b-secret

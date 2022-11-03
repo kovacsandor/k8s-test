@@ -10,6 +10,7 @@ All microservices need to have Docker images build from them.
 
 ```bash
 cd ~/Projects/k8s-test/
+# react app environment variables need to be present at build time
 docker build -t andorkovacs/k8s-test-client-docker-image -f ./client/Dockerfile $(for i in `cat .env`; do out+="--build-arg $i " ; done; echo $out;out="") ./client/ 
 docker build -t andorkovacs/k8s-test-microservice-a-docker-image -f ./microservice-a/Dockerfile ./microservice-a/
 docker build -t andorkovacs/k8s-test-microservice-b-docker-image -f ./microservice-b/Dockerfile ./microservice-b/
@@ -23,6 +24,14 @@ All images need to be pushed to Docker Hub.
 docker push andorkovacs/k8s-test-microservice-a-docker-image
 docker push andorkovacs/k8s-test-microservice-b-docker-image
 docker push andorkovacs/k8s-test-client-docker-image
+```
+
+#### Create secrets for environment variables
+
+```bash
+kubectl apply -f ./microservice-a/secret.yaml
+kubectl apply -f ./microservice-b/secret.yaml
+# client environment variables were set at image build time
 ```
 
 #### Create the Kubernetes deployments
@@ -69,6 +78,18 @@ In your `/etc/host` file map `k8s-test.com` to your local ip address. This is ne
 127.0.0.1 k8s-test.com
 ```
 
+#### Stop app in Kubernetes
+
+```bash
+kubectl delete deployment client-deployment
+kubectl delete deployment microservice-a-deployment
+kubectl delete deployment microservice-b-deployment
+kubectl delete service client-cluster-ip-service
+kubectl delete service microservice-a-cluster-ip-service
+kubectl delete service microservice-b-cluster-ip-service
+kubectl delete all --all -n ingress-nginx
+```
+
 ### With Docker Compose
 
 #### Start app
@@ -80,7 +101,7 @@ cd ~/Projects/k8s-test/
 docker-compose up -d
 ```
 
-#### Stop app
+#### Stop app in Docker Compose
 
 Stops and deletes the containers
 
