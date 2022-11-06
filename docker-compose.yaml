@@ -23,6 +23,14 @@ services:
       - ./microservice-a/.env
     volumes:
       - ./microservice-a/src/:/usr/src/app/src/
+
+  microservice-a-database:
+    container_name: microservice-a-database-cluster-ip-service
+    image: mongo
+    ports:
+      - "27080:27017"
+    volumes:
+      - ./microservice-a/data:/data/db
       
   microservice-b:
     container_name: microservice-b-cluster-ip-service

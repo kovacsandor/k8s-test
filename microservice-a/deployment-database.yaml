@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservice-a-database-deployment
+spec: 
+  replicas: 1
+  selector:
+    matchLabels:
+      app: microservice-a-database-deployment-label
+  template:
+    metadata:
+      labels: 
+        app: microservice-a-database-deployment-label
+    spec: 
+      containers:
+        - name: microservice-a-database-deployment-container
+          image: mongo

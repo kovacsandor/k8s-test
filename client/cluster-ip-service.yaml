@@ -7,7 +7,7 @@ spec:
     app: client-deployment-label
   type: ClusterIP
   ports:
-    - name: client-deployment-label
+    - name: client-cluster-ip-service-port-name
       protocol: TCP
       port: 3000
       targetPort: 3000 

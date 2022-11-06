@@ -7,7 +7,7 @@ spec:
     app: microservice-a-deployment-label
   type: ClusterIP
   ports:
-    - name: microservice-a-deployment-label
+    - name: microservice-a-cluster-ip-service-port-name
       protocol: TCP
       port: 8080
       targetPort: 8080 
