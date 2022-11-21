@@ -1,0 +1,17 @@
+name: Microservice A CI
+
+on:
+  pull_request:
+    paths: 
+      - 'microservice-a/**'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - run: cd microservice-a
+      - run: npm ci
+      - run: npm test
