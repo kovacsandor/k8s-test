@@ -6,12 +6,10 @@ on:
       - 'microservice-a/**'
 
 jobs:
-  build:
+  test:
 
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
-      - run: cd microservice-a
-      - run: npm ci
-      - run: npm test
+      - run: cd microservice-a && npm ci && npm test
