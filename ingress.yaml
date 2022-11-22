@@ -7,7 +7,7 @@ metadata:
     nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
   rules:
-    - host: www.andorkovacs.online
+    - host: andorkovacs.online
       http:
         paths:
           - path: /microservice-a

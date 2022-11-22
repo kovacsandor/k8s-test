@@ -20,5 +20,5 @@ app.get("/microservice-b/data-from-microservice-b", (req, res) => {
 });
 
 app.listen(port, () =>
-  console.log(`Microservice "B" listening on port ${port}...`, process.env)
+  console.log(`Microservice "B" listening on port ${port}...`, process.env, 'version', 2)
 );

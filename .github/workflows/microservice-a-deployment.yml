@@ -29,9 +29,10 @@ jobs:
     - run: doctl kubernetes cluster kubeconfig save k8s-test-cluster
 
     # Apply changes to the Kubernetes cluster
-    - run: kubectl create secret generic prod-db-secret \
-        --from-literal=VARIABLE_FROM_DOTENV_FILE=$VARIABLE_FROM_DOTENV_FILE \
-        --from-literal=ANOTHER_VARIABLE=$VARIABLE_FROM_DOTENV_FILE 
+    - run: kubectl delete secret microservice-a-secret 
+    - run: kubectl create secret generic microservice-a-secret 
+        --from-literal=VARIABLE_FROM_DOTENV_FILE="$VARIABLE_FROM_DOTENV_FILE" 
+        --from-literal=ANOTHER_VARIABLE="$VARIABLE_FROM_DOTENV_FILE" 
       env:
         VARIABLE_FROM_DOTENV_FILE: ${{ secrets.VARIABLE_FROM_DOTENV_FILE }}
 

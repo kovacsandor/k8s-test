@@ -1,4 +1,4 @@
-name: Microservice A CI
+name: Microservice A Test
 
 on:
   pull_request:

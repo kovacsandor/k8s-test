@@ -50,7 +50,7 @@ function App() {
     console.log(data);
   };
 
-  console.log("process.env", process.env);
+  console.log("process.env", process.env, 'version', 2);
 
   return (
     <>
