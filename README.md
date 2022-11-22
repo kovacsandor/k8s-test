@@ -84,7 +84,7 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/cont
 Create a an ingress configuration for the ingress-nginx-controller.
 
 ```bash
-kubectl apply -f ingress.yaml
+kubectl apply -f ingress.dev.yaml
 ```
 
 #### Restart app in Kubernetes

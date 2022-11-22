@@ -1,0 +1,37 @@
+name: Microservice B deployment
+
+on:
+  push:
+    branches: [ "main" ]
+    paths: 
+      - 'microservice-b/**'
+jobs:
+  deployment:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - uses: actions/checkout@v3
+
+    # Build docker image
+    - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+    - run: docker build -t andorkovacs/k8s-test-microservice-b-docker-image -f ./microservice-b/Dockerfile ./microservice-b/
+    - run: docker push andorkovacs/k8s-test-microservice-b-docker-image
+
+    # Log in to DigitalOcean and set the cluster context to k8s-test-cluster
+    - uses: digitalocean/action-doctl@v2
+      with:
+        token: ${{ secrets.DIGITALOCEAN_PERSONAL_ACCESS_TOKEN }}
+    - run: doctl kubernetes cluster kubeconfig save k8s-test-cluster
+
+    # Apply changes to the Kubernetes cluster
+    - run: kubectl create secret generic prod-db-secret \ 
+        --from-literal=VARIABLE_FROM_DOTENV_FILE=$VARIABLE_FROM_DOTENV_FILE
+      env:
+        VARIABLE_FROM_DOTENV_FILE: ${{ secrets.VARIABLE_FROM_DOTENV_FILE }}
+
+    - run: kubectl rollout restart deployment microservice-b-deployment

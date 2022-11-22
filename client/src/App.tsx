@@ -11,39 +11,39 @@ function App() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const onClickA = async () => {
-    const { data } = await axios.get("http://k8s-test.com/microservice-a");
+    const { data } = await axios.get(`${process.env.REACT_APP_ORIGIN}/microservice-a`);
     setA(JSON.stringify(data));
   };
 
   const onClickB = async () => {
     const { data } = await axios.get(
-      "http://k8s-test.com/microservice-a/response-including-data-from-microservice-b"
+      `${process.env.REACT_APP_ORIGIN}/microservice-a/response-including-data-from-microservice-b`
     );
     setB(JSON.stringify(data));
   };
 
   const onClickC = async () => {
-    const { data } = await axios.get("http://k8s-test.com/microservice-b");
+    const { data } = await axios.get(`${process.env.REACT_APP_ORIGIN}/microservice-b`);
     setC(JSON.stringify(data));
   };
 
   const onClickD = async () => {
     const { data } = await axios.get(
-      "http://k8s-test.com/microservice-b/data-from-microservice-b"
+      `${process.env.REACT_APP_ORIGIN}/microservice-b/data-from-microservice-b`
     );
     setD(JSON.stringify(data));
   };
 
   const onClickE = async () => {
     const { data } = await axios.get(
-      "http://k8s-test.com/microservice-a/test-objects-from-database"
+      `${process.env.REACT_APP_ORIGIN}/microservice-a/test-objects-from-database`
     );
     setE(JSON.stringify(data));
   };
 
   const onClickF = async () => {
     const { data } = await axios.post(
-      `http://k8s-test.com/microservice-a/add-test-object-to-database/${inputRef.current?.value}`
+      `${process.env.REACT_APP_ORIGIN}/microservice-a/add-test-object-to-database/${inputRef.current?.value}`
     );
     if (inputRef.current) inputRef.current.value = "";
 
