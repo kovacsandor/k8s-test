@@ -6,7 +6,7 @@ import {
   ObjectId,
 } from "mongoose";
 
-interface TestObject {
+export interface TestObject {
   readonly name: string;
 }
 
