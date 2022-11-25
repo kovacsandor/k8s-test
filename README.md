@@ -12,6 +12,42 @@ In your `/etc/host` file map `k8s-test.com` to your local ip address. This is ne
 
 Once the application is running visit the app in the browser <http://k8s-test.com/>
 
+### Starting up the app in Docker Compose
+
+Start application in development mode with live code refresh and live reload in the browser.
+
+```bash
+cd ~/Projects/k8s-test/
+docker-compose up --detach
+```
+
+If you make changes outside of the src folder you might want to rebuild the images with `docker-compose up --detach --build`.
+
+#### Environment variables for Docker Compose
+
+Make sure you provided the `.env` file for all microservices.
+
+#### Accessing the databases running in Docker Compose locally
+
+Find the database you want to connect to in the `docker-compose.yaml` file and see what port it is mapped to on your local computer.
+
+```yaml
+services:
+  microservice-a-database:
+    ports:
+      - "27080:27017"
+```
+
+Then connect to the database using that port `mongodb://localhost:27080`.
+
+#### Stop app in Docker Compose
+
+Stops and deletes the containers
+
+```bash
+docker-compose down
+```
+
 ### Starting up the app in Kubernetes
 
 #### Docker images
@@ -43,6 +79,8 @@ docker push andorkovacs/k8s-test-client-docker-image
 
 ##### Create secrets for environment variables
 
+Make sure you provided the `secret.yaml` file for all microservices.
+
 ```bash
 # client environment variables were set at image build time
 kubectl apply -f ./microservice-a/secret.yaml
@@ -73,10 +111,10 @@ kubectl apply -f ./client/cluster-ip-service.yaml
 
 ##### Install NGINX ingress controller
 
-Create a LoadBalancer service and an ingress-nginx-controller deployment.
+Create a LoadBalancer service and an ingress-nginx-controller deployment. [NGINX Ingress Controller Installation Guide - Quick start](https://kubernetes.github.io/ingress-nginx/deploy/#quick-start)
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.4.0/deploy/static/provider/cloud/deploy.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/cloud/deploy.yaml
 ```
 
 ##### Configure NGINX ingress controller
@@ -96,6 +134,8 @@ kubectl rollout restart deployment microservice-a-database-deployment
 kubectl rollout restart deployment microservice-b-deployment
 ```
 
+> Note that if you restart your database deployments all your data saved will be lost.
+
 #### Accessing the databases running in Kubernetes locally
 
 Create nope port services
@@ -114,9 +154,9 @@ Find the database's nope port service that you want to connect to and use the _n
 
 | NAME                                      | TYPE     | CLUSTER-IP   | EXTERNAL-IP | PORT(S)             | AGE |
 | ----------------------------------------- | -------- | ------------ | ----------- | ------------------- | --- |
-| ⋮                                         | ⋮        | ⋮            | ⋮           | ⋮                   | ⋮   |
+| ⋯                                         | ⋯        | ⋯            | ⋯           | ⋯                   | ⋯   |
 | microservice-a-database-node-port-service | NodePort | 10.96.125.79 | `<none>`    | 27017:**30247**/TCP | 48m |
-| ⋮                                         | ⋮        | ⋮            | ⋮           | ⋮                   | ⋮   |
+| ⋯                                         | ⋯        | ⋯            | ⋯           | ⋯                   | ⋯   |
 
 You can access the database with the connection string of `mongodb://localhost:30247`.
 
@@ -135,34 +175,20 @@ kubectl delete service microservice-a-database-node-port-service
 kubectl delete all --all -n ingress-nginx
 ```
 
-### Starting up the app in Docker Compose
+## Deploying the app on DigitalOcean
 
-Start application in development mode with live code refresh and live reload in the browser
+### Running tests
 
-```bash
-cd ~/Projects/k8s-test/
-docker-compose up --detach
-```
+If you open a pull request all the tests of the changes microservices will run.
 
-If you make changes outside of the src folder you might want to rebuild the images with `docker-compose up --detach --build`.
+### Deployment
 
-#### Accessing the databases running in Docker Compose locally
+If you merge a pull request to master branch the microservices related to the change will be deployed.
 
-Find the database you want to connect to in the `docker-compose.yaml` file and see what port it is mapped to on your local computer.
+### Environment variables
 
-```yaml
-services:
-  microservice-a-database:
-    ports:
-      - "27080:27017"
-```
+If you add new environment variable, first you have to add the value as a _secret_ to GitHub. Then you can modify the adequate workflow file and refer to the secret's value.
 
-Then connect to the database using that port `mongodb://localhost:27080`.
+### Visit the app
 
-#### Stop app in Docker Compose
-
-Stops and deletes the containers
-
-```bash
-docker-compose down
-```
+[k8s-test.andorkovacs.online](http://k8s-test.andorkovacs.online/)
