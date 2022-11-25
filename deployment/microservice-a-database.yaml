@@ -15,3 +15,20 @@ spec:
       containers:
         - name: microservice-a-database-deployment-container
           image: mongo
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: microservice-a-database-cluster-ip-service
+spec:
+  selector:
+    app: microservice-a-database-deployment-label
+  type: ClusterIP
+  ports:
+    - name: microservice-a-database-cluster-ip-service-port-name
+      protocol: TCP
+      port: 27017
+      targetPort: 27017 
+      

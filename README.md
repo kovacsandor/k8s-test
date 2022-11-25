@@ -87,26 +87,15 @@ kubectl apply -f ./microservice-a/secret.yaml
 kubectl apply -f ./microservice-b/secret.yaml
 ```
 
-##### Create the Kubernetes deployments
+##### Create the Kubernetes deployments and Cluster IP services
 
 The deployments will create pods running containers made based on the docker images.
 
 ```bash
-kubectl apply -f ./microservice-a/deployment.yaml
-kubectl apply -f ./microservice-a/deployment-database.yaml
-kubectl apply -f ./microservice-b/deployment.yaml
-kubectl apply -f ./client/deployment.yaml
-```
-
-##### Create the Kubernetes Cluster IP services
-
-The Cluster IP services take care of the communication between pods inside the cluster.
-
-```bash
-kubectl apply -f ./microservice-a/cluster-ip-service.yaml
-kubectl apply -f ./microservice-a/cluster-ip-service-database.yaml
-kubectl apply -f ./microservice-b/cluster-ip-service.yaml
-kubectl apply -f ./client/cluster-ip-service.yaml
+kubectl apply -f ./deployment/microservice-a.yaml
+kubectl apply -f ./deployment/microservice-a-database.yaml
+kubectl apply -f ./deployment/microservice-b.yaml
+kubectl apply -f ./deployment/client.yaml
 ```
 
 ##### Install NGINX ingress controller
