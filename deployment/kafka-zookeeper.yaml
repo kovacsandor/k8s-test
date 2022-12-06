@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-zookeeper-deployment
+spec: 
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-zookeeper-deployment-label
+  template:
+    metadata:
+      labels: 
+        app: kafka-zookeeper-deployment-label
+    spec: 
+      containers:
+        - name: kafka-zookeeper-deployment-container
+          image: docker.io/bitnami/zookeeper
+          env:
+            - name: ALLOW_ANONYMOUS_LOGIN
+              value: "yes"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-zookeeper-cluster-ip-service
+spec:
+  selector:
+    app: kafka-zookeeper-deployment-label
+  type: ClusterIP
+  ports:
+    - name: kafka-zookeeper-cluster-ip-service-port-name
+      protocol: TCP
+      port: 2181
+      targetPort: 2181 

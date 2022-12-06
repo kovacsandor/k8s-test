@@ -1,4 +1,5 @@
 import express from "express";
+import { subscribeKafka } from "./kafka";
 
 const app = express();
 const port = 8081;
@@ -19,6 +20,7 @@ app.get("/microservice-b/data-from-microservice-b", (req, res) => {
   });
 });
 
-app.listen(port, () =>
+app.listen(port, async () => {  
+  await subscribeKafka('test-topic')
   console.log(`Microservice "B" listening on port ${port}...`, process.env, 'version', 2)
-);
+});

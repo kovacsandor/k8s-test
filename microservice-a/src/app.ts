@@ -1,6 +1,7 @@
 import express, { Request, Response,  } from "express";
 import axios from "axios";
 import { testObjectModel } from "./testObjectModel";
+import { sendMessages } from "./kafka";
 
 export const app = express();
 
@@ -54,3 +55,19 @@ app.post(
     res.send(testObject);
   }
 );
+
+app.post(
+  "/microservice-a/test-kafka-producer/:message",
+  async (req: Request, res: Response) => {
+    console.log(
+      "microservice-a POST /microservice-a/test-kafka-producer/:message called..."
+    );
+
+    const message = req.params.message;
+
+    const recordMetadata = await sendMessages('test-topic', [message])
+    res.status(200);
+    res.send(recordMetadata);
+  }
+);
+

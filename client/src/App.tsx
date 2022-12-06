@@ -8,7 +8,8 @@ function App() {
   const [d, setD] = useState("");
   const [e, setE] = useState("");
 
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRefF = useRef<HTMLInputElement>(null);
+  const inputRefG = useRef<HTMLInputElement>(null);
 
   const onClickA = async () => {
     const { data } = await axios.get(`${process.env.REACT_APP_ORIGIN}/microservice-a`);
@@ -43,9 +44,18 @@ function App() {
 
   const onClickF = async () => {
     const { data } = await axios.post(
-      `${process.env.REACT_APP_ORIGIN}/microservice-a/add-test-object-to-database/${inputRef.current?.value}`
+      `${process.env.REACT_APP_ORIGIN}/microservice-a/add-test-object-to-database/${inputRefF.current?.value}`
     );
-    if (inputRef.current) inputRef.current.value = "";
+    if (inputRefF.current) inputRefF.current.value = "";
+
+    console.log(data);
+  };
+
+  const onClickG = async () => {
+    const { data } = await axios.post(
+      `${process.env.REACT_APP_ORIGIN}/microservice-a/test-kafka-producer/${inputRefG.current?.value}`
+    );
+    if (inputRefG.current) inputRefG.current.value = "";
 
     console.log(data);
   };
@@ -81,9 +91,15 @@ function App() {
         <div>{e}</div>
       </div>
       <div>
-        <input ref={inputRef} />
+        <input ref={inputRefF} />
         <button onClick={onClickF}>
           POST /microservice-a/add-test-object-to-database/:name
+        </button>
+      </div>
+      <div>
+        <input ref={inputRefG} />
+        <button onClick={onClickG}>
+          POST /microservice-a/test-kafka-producer/:message
         </button>
       </div>
     </>

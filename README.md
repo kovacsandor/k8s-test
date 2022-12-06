@@ -92,10 +92,12 @@ kubectl apply -f ./microservice-b/secret.yaml
 The deployments will create pods running containers made based on the docker images.
 
 ```bash
-kubectl apply -f ./deployment/microservice-a.yaml
-kubectl apply -f ./deployment/microservice-a-database.yaml
-kubectl apply -f ./deployment/microservice-b.yaml
 kubectl apply -f ./deployment/client.yaml
+kubectl apply -f ./deployment/kafka-zookeeper.yaml
+kubectl apply -f ./deployment/kafka.yaml
+kubectl apply -f ./deployment/microservice-a-database.yaml
+kubectl apply -f ./deployment/microservice-a.yaml
+kubectl apply -f ./deployment/microservice-b.yaml
 ```
 
 ##### Install NGINX ingress controller
@@ -127,36 +129,40 @@ kubectl rollout restart deployment microservice-b-deployment
 
 #### Accessing the databases running in Kubernetes locally
 
-Create nope port services
+List pods
 
 ```bash
-kubectl apply -f ./microservice-a/node-port-service-database.yaml
+kubectl get pods
 ```
 
-List services
+Find the database's pod that you want to connect to.
+
+| NAME                                                | READY | STATUS  | RESTARTS | AGE |
+| --------------------------------------------------- | ----- | ------- | -------- | --- |
+| ⋯                                                   | ⋯     | ⋯       | ⋯        | ⋯   |
+| microservice-a-database-deployment-59d59df77c-b2gdj | 1/1   | Running | 0        | 21m |
+| ⋯                                                   | ⋯     | ⋯       | ⋯        | ⋯   |
+
+You can forward the port of the pod the database runs in.
 
 ```bash
-kubectl get services
+kubectl port-forward microservice-a-database-deployment-59d59df77c-b2gdj 27080:27017
 ```
 
-Find the database's nope port service that you want to connect to and use the _node port_.
-
-| NAME                                      | TYPE     | CLUSTER-IP   | EXTERNAL-IP | PORT(S)             | AGE |
-| ----------------------------------------- | -------- | ------------ | ----------- | ------------------- | --- |
-| ⋯                                         | ⋯        | ⋯            | ⋯           | ⋯                   | ⋯   |
-| microservice-a-database-node-port-service | NodePort | 10.96.125.79 | `<none>`    | 27017:**30247**/TCP | 48m |
-| ⋯                                         | ⋯        | ⋯            | ⋯           | ⋯                   | ⋯   |
-
-You can access the database with the connection string of `mongodb://localhost:30247`.
+You can access the database with the connection string of `mongodb://localhost:27080`.
 
 #### Stop app in Kubernetes
 
 ```bash
 kubectl delete deployment client-deployment
+kubectl delete deployment kafka-deployment
+kubectl delete deployment kafka-zookeeper-deployment
 kubectl delete deployment microservice-a-deployment
 kubectl delete deployment microservice-a-database-deployment
 kubectl delete deployment microservice-b-deployment
 kubectl delete service client-cluster-ip-service
+kubectl delete service kafka-cluster-ip-service
+kubectl delete service kafka-zookeeper-cluster-ip-service
 kubectl delete service microservice-a-cluster-ip-service
 kubectl delete service microservice-a-database-cluster-ip-service
 kubectl delete service microservice-b-cluster-ip-service

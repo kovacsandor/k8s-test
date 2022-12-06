@@ -1,6 +1,30 @@
-version: '2'
+version: '3'
 
 services:
+  zookeeper:
+    container_name: kafka-zookeeper-cluster-ip-service
+    image: bitnami/zookeeper
+    ports:
+      - "2181:2181"
+    volumes:
+      - "./data/zookeeper:/bitnami"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+
+  kafka:
+    container_name: kafka-cluster-ip-service
+    image: bitnami/kafka
+    ports:
+      - "9092:9092"
+    volumes:
+      - "./data/kafka:/bitnami"
+    environment:
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka-cluster-ip-service:9092
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=kafka-zookeeper-cluster-ip-service:2181
+    depends_on:
+      - zookeeper
+
   nginx-proxy:
     container_name: nginx-proxy
     image: nginxproxy/nginx-proxy
@@ -24,6 +48,10 @@ services:
       - ./microservice-a/.env
     volumes:
       - ./microservice-a/src/:/usr/src/app/src/
+    depends_on:
+      - kafka
+      - microservice-a-database
+      - nginx-proxy
 
   microservice-a-database:
     container_name: microservice-a-database-cluster-ip-service
@@ -31,7 +59,7 @@ services:
     ports:
       - "27080:27017"
     volumes:
-      - ./microservice-a/data:/data/db
+      - ./data/microservice-a:/data/db
       
   microservice-b:
     container_name: microservice-b-cluster-ip-service
@@ -48,6 +76,9 @@ services:
       - ./microservice-b/.env
     volumes:
       - ./microservice-b/src/:/usr/src/app/src/
+    depends_on:
+      - kafka
+      - nginx-proxy
 
   client:
     container_name: client-cluster-ip-service
@@ -64,3 +95,5 @@ services:
       - ./client/.env
     volumes:
       - ./client/src/:/usr/src/app/src/
+    depends_on:
+      - nginx-proxy

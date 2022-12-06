@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-deployment
+spec: 
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-deployment-label
+  template:
+    metadata:
+      labels: 
+        app: kafka-deployment-label
+    spec: 
+      containers:
+        - name: kafka-deployment-container
+          image: docker.io/bitnami/kafka
+          env:
+            - name: ALLOW_PLAINTEXT_LISTENER
+              value: "yes"
+            - name: KAFKA_CFG_ADVERTISED_LISTENERS
+              value: "PLAINTEXT://kafka-cluster-ip-service:9092"
+            - name: KAFKA_CFG_ZOOKEEPER_CONNECT
+              value: "kafka-zookeeper-cluster-ip-service:2181"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-cluster-ip-service
+spec:
+  selector:
+    app: kafka-deployment-label
+  type: ClusterIP
+  ports:
+    - name: kafka-cluster-ip-service-port-name
+      protocol: TCP
+      port: 9092
+      targetPort: 9092 
